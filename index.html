@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Казна</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="header">
+    <h1>Казна</h1>
+    <p>Твоя казна — твои правила</p>
+  </header>
+
+  <section class="balance-card">
+    <span class="balance-label">Баланс</span>
+    <span class="balance-amount" id="balance">0 ₽</span>
+    <div class="balance-info">
+      <span class="income" id="income">Доход: 0 ₽</span>
+      <span class="expense" id="expense">Расход: 0 ₽</span>
+    </div>
+  </section>
+
+  <section class="actions">
+    <button class="btn btn-income" onclick="openForm('income')">Доход</button>
+    <button class="btn btn-expense" onclick="openForm('expense')">Расход</button>
+  </section>
+
+  <section class="transactions">
+    <h2>Последние операции</h2>
+    <ul id="transaction-list"></ul>
+  </section>
+
+  <section class="modal" id="modal">
+    <div class="modal-content">
+      <h2 id="modal-title">Добавить</h2>
+      
+      <input type="number" id="amount" placeholder="Сумма">
+      
+      <select id="category">
+        <option value="Зарплата">Зарплата</option>
+        <option value="Еда">Еда</option>
+        <option value="Транспорт">Транспорт</option>
+        <option value="Другое">Другое</option>
+      </select>
+      
+      <input type="text" id="note" placeholder="Заметка">
+      
+      <div class="modal-buttons">
+        <button class="btn btn-save" onclick="addTransaction()">Сохранить</button>
+        <button class="btn btn-cancel" onclick="closeForm()">Отмена</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

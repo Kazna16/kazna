@@ -1,0 +1,179 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #1a1a1a;
+  color: #fff;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 20px 16px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  font-size: 28px;
+  color: #fff;
+}
+
+.header p {
+  font-size: 14px;
+  color: #888;
+}
+
+.balance-card {
+  background: #2a2a2a;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.balance-label {
+  font-size: 13px;
+  color: #999;
+}
+
+.balance-amount {
+  display: block;
+  font-size: 38px;
+  font-weight: 600;
+  margin: 8px 0 16px;
+}
+
+.balance-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.income {
+  color: #4caf50;
+}
+
+.expense {
+  color: #f44336;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.btn-income {
+  background: #4caf50;
+  color: #fff;
+}
+
+.btn-expense {
+  background: #f44336;
+  color: #fff;
+}
+
+.btn-save {
+  background: #2196f3;
+  color: #fff;
+}
+
+.btn-cancel {
+  background: #444;
+  color: #fff;
+}
+
+.transactions h2 {
+  font-size: 17px;
+  margin-bottom: 16px;
+}
+
+#transaction-list {
+  list-style: none;
+}
+
+.transaction-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px;
+  background: #2a2a2a;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+
+.transaction-amount-income {
+  color: #4caf50;
+  font-weight: 600;
+}
+
+.transaction-amount-expense {
+  color: #f44336;
+  font-weight: 600;
+}
+
+.empty-message {
+  text-align: center;
+  color: #666;
+  padding: 30px 0;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal.active {
+  display: flex;
+}
+
+.modal-content {
+  background: #2a2a2a;
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.modal-content h2 {
+  margin-bottom: 20px;
+}
+
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  background: #1a1a1a;
+  border: 1px solid #444;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
