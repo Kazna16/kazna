@@ -4,6 +4,7 @@ let shifts = JSON.parse(localStorage.getItem('kazna_shifts')) || [];
 let currentType = 'income';
 let currentGoalId = null;
 let editingTransactionId = null;
+let notificationsEnabled = JSON.parse(localStorage.getItem('kazna_notifications')) || false;
 
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
@@ -50,6 +51,9 @@ function showScreen(screenName) {
   if (screenName === 'stats') {
     updateMonthDisplay();
     renderStats();
+  }
+  if (screenName === 'settings') {
+    updateNotificationButton();
   }
 }
 
@@ -489,127 +493,3 @@ function renderStats() {
   `).join('');
   document.getElementById('stats-legend').innerHTML = legendHtml;
 }
-
-function exportData() {
-  const data = {
-    transactions: transactions,
-    goals: goals,
-    shifts: shifts,
-    exportedAt: new Date().toISOString()
-  };
-  const json = JSON.stringify(data, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `kazna_backup_${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function importData(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = JSON.parse(e.target.result);
-      if (data.transactions) {
-        transactions = data.transactions;
-        saveTransactions();
-      }
-      if (data.goals) {
-        goals = data.goals;
-        saveGoals();
-      }
-      if (data.shifts) {
-        shifts = data.shifts;
-        saveShifts();
-      }
-      updateUI();
-      renderGoals();
-      renderShifts();
-      renderCalendar();
-      alert('Данные успешно импортированы!');
-    } catch (err) {
-      alert('Ошибка импорта! Неверный файл.');
-    }
-  };
-  reader.readAsText(file);
-  input.value = '';
-}
-
-function saveTransactions() {
-  localStorage.setItem('kazna_transactions', JSON.stringify(transactions));
-}
-
-function saveGoals() {
-  localStorage.setItem('kazna_goals', JSON.stringify(goals));
-}
-
-function saveShifts() {
-  localStorage.setItem('kazna_shifts', JSON.stringify(shifts));
-}
-
-function calculateBalance() {
-  let income = 0;
-  let expense = 0;
-  transactions.forEach(t => {
-    if (t.type === 'income') {
-      income += t.amount;
-    } else {
-      expense += t.amount;
-    }
-  });
-  return { income, expense, balance: income - expense };
-}
-
-function updateUI() {
-  const { income, expense, balance } = calculateBalance();
-  balanceEl.textContent = `${balance.toLocaleString('ru-RU')} ₽`;
-  incomeEl.textContent = `Доход: ${income.toLocaleString('ru-RU')} ₽`;
-  expenseEl.textContent = `Расход: ${expense.toLocaleString('ru-RU')} ₽`;
-  renderTransactions();
-}
-
-function renderTransactions() {
-  if (transactions.length === 0) {
-    transactionList.innerHTML = '<div class="empty-message">Пока пусто</div>';
-    return;
-  }
-  transactionList.innerHTML = '';
-  transactions.slice(0, 10).forEach(t => {
-    const li = document.createElement('li');
-    li.className = 'transaction-item';
-    const sign = t.type === 'income' ? '+' : '-';
-    const amountClass = t.type === 'income' ? 'transaction-amount-income' : 'transaction-amount-expense';
-    li.innerHTML = `
-      <div class="info" onclick="editTransaction(${t.id})">
-        <span class="note">${t.note}</span>
-        <span class="category">${t.category} • ${t.date}</span>
-        ${t.comment ? `<span class="comment">${t.comment}</span>` : ''}
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span class="${amountClass}">${sign}${t.amount.toLocaleString('ru-RU')} ₽</span>
-        <button class="btn-delete" onclick="deleteTransaction(${t.id})">✕</button>
-      </div>
-    `;
-    transactionList.appendChild(li);
-  });
-}
-
-updateUI();
-
-document.querySelectorAll('.modal').forEach(m => {
-  m.addEventListener('click', function(e) {
-    if (e.target === m) {
-      m.classList.remove('active');
-    }
-  });
-});
-
-amountInput.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    addTransaction();
-  }
-});
