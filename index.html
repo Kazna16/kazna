@@ -171,6 +171,7 @@
       <div class="stats-legend" id="stats-legend"></div>
     </section>
   </div>
+
   <!-- ЭКРАН: КОПИЛКИ -->
   <div id="screen-envelopes" class="screen">
     <header class="header">
@@ -187,7 +188,7 @@
     <section class="modal" id="envelope-modal">
       <div class="modal-content">
         <h2>Новая копилка</h2>
-        <input type="text" id="envelope-name" placeholder="Название (например: Еда)">
+        <input type="text" id="envelope-name" placeholder="Название (Еда)">
         <input type="number" id="envelope-budget" placeholder="Бюджет на месяц">
         <div class="modal-buttons">
           <button class="btn btn-save" onclick="addEnvelope()">Создать</button>
@@ -215,7 +216,7 @@
         <h2>Новая подписка</h2>
         <input type="text" id="subscription-name" placeholder="Название (Netflix)">
         <input type="number" id="subscription-amount" placeholder="Сумма в месяц">
-        <input type="date" id="subscription-date" placeholder="Дата списания">
+        <input type="date" id="subscription-date">
         <div class="modal-buttons">
           <button class="btn btn-save" onclick="addSubscription()">Создать</button>
           <button class="btn btn-cancel" onclick="closeSubscriptionForm()">Отмена</button>
@@ -268,7 +269,7 @@
     <section class="modal" id="event-modal">
       <div class="modal-content">
         <h2>Новое событие</h2>
-        <input type="text" id="event-name" placeholder="Название (День рождения)">
+        <input type="text" id="event-name" placeholder="Название">
         <select id="event-category">
           <option value="День рождения">День рождения</option>
           <option value="Барбер">Барбер</option>
@@ -277,36 +278,10 @@
           <option value="Другое">Другое</option>
         </select>
         <input type="date" id="event-date">
-        <input type="text" id="event-note" placeholder="Заметка (кому, что)">
+        <input type="text" id="event-note" placeholder="Заметка">
         <div class="modal-buttons">
           <button class="btn btn-save" onclick="addEvent()">Создать</button>
           <button class="btn btn-cancel" onclick="closeEventForm()">Отмена</button>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <!-- ЭКРАН: ЖЕЛАНИЯ -->
-  <div id="screen-wishlist" class="screen">
-    <header class="header">
-      <h1>Список желаний</h1>
-      <p>Хочу купить</p>
-    </header>
-
-    <section class="actions">
-      <button class="btn btn-income" onclick="openWishForm()">Добавить желание</button>
-    </section>
-
-    <section class="wishlist-list" id="wishlist-list"></section>
-
-    <section class="modal" id="wish-modal">
-      <div class="modal-content">
-        <h2>Новое желание</h2>
-        <input type="text" id="wish-name" placeholder="Что хочешь?">
-        <input type="number" id="wish-price" placeholder="Цена">
-        <div class="modal-buttons">
-          <button class="btn btn-save" onclick="addWish()">Создать</button>
-          <button class="btn btn-cancel" onclick="closeWishForm()">Отмена</button>
         </div>
       </div>
     </section>
@@ -328,7 +303,7 @@
     <section class="modal" id="investment-modal">
       <div class="modal-content">
         <h2>Новая инвестиция</h2>
-        <input type="text" id="investment-name" placeholder="Название (Bitcoin)">
+        <input type="text" id="investment-name" placeholder="Название">
         <input type="number" id="investment-amount" placeholder="Сколько вложил">
         <div class="modal-buttons">
           <button class="btn btn-save" onclick="addInvestment()">Создать</button>
@@ -348,7 +323,7 @@
     <section class="settings-container">
       <div class="settings-card">
         <h3>Напоминания</h3>
-        <p class="settings-desc">Утром — про цель, днём — про смену, вечером — про операции</p>
+        <p class="settings-desc">Выбери время для напоминаний</p>
         <div class="time-setting">
           <label>Утреннее (цель)</label>
           <input type="time" id="morning-time" value="09:00" onchange="saveNotificationTimes()">
@@ -368,7 +343,7 @@
       
       <div class="settings-card">
         <h3>Резервное копирование</h3>
-        <p class="settings-desc">Сохрани все данные в файл или восстанови из файла</p>
+        <p class="settings-desc">Сохрани все данные в файл</p>
         <div class="settings-buttons">
           <button class="btn btn-save" onclick="exportData()">Экспорт</button>
           <button class="btn btn-cancel" onclick="document.getElementById('import-file').click()">Импорт</button>
@@ -385,6 +360,10 @@
     <button class="nav-btn" id="nav-shifts" onclick="showScreen('shifts')">Смены</button>
     <button class="nav-btn" id="nav-stats" onclick="showScreen('stats')">Статы</button>
     <button class="nav-btn" id="nav-envelopes" onclick="showScreen('envelopes')">Копилки</button>
+    <button class="nav-btn" id="nav-subscriptions" onclick="showScreen('subscriptions')">Подписки</button>
+    <button class="nav-btn" id="nav-debts" onclick="showScreen('debts')">Долги</button>
+    <button class="nav-btn" id="nav-events" onclick="showScreen('events')">События</button>
+    <button class="nav-btn" id="nav-investments" onclick="showScreen('investments')">Инвест</button>
     <button class="nav-btn" id="nav-settings" onclick="showScreen('settings')">⚙</button>
   </nav>
 

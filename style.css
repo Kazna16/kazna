@@ -247,32 +247,32 @@ body {
   font-size: 14px;
 }
 
-.goals-list, .envelopes-list, .subscriptions-list, .debts-list, .events-list, .wishlist-list, .investments-list {
+.goals-list, .envelopes-list, .subscriptions-list, .debts-list, .events-list, .investments-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.goal-card, .envelope-card, .subscription-card, .debt-card, .event-card, .wish-card, .investment-card {
+.goal-card, .envelope-card, .subscription-card, .debt-card, .event-card, .investment-card {
   background: #2a2a2a;
   border-radius: 10px;
   padding: 16px;
   border: 1px solid #333;
 }
 
-.goal-card-header, .envelope-card-header, .subscription-card-header, .debt-card-header, .event-card-header, .wish-card-header, .investment-card-header {
+.goal-card-header, .envelope-card-header, .subscription-card-header, .debt-card-header, .event-card-header, .investment-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
 }
 
-.goal-card-title, .envelope-card-title, .subscription-card-title, .debt-card-title, .event-card-title, .wish-card-title, .investment-card-title {
+.goal-card-title, .envelope-card-title, .subscription-card-title, .debt-card-title, .event-card-title, .investment-card-title {
   font-size: 15px;
   font-weight: 600;
 }
 
-.goal-card-amount, .envelope-card-amount, .subscription-card-amount, .debt-card-amount, .event-card-amount, .wish-card-amount, .investment-card-amount {
+.goal-card-amount, .envelope-card-amount, .subscription-card-amount, .debt-card-amount, .event-card-amount, .investment-card-amount {
   font-size: 14px;
   color: #2196f3;
   font-weight: 600;
@@ -656,7 +656,7 @@ body {
   background: none;
   border: none;
   color: #888;
-  font-size: 11px;
+  font-size: 10px;
   cursor: pointer;
   padding: 8px 4px;
   transition: color 0.2s;

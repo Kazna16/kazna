@@ -5,7 +5,6 @@ let envelopes = JSON.parse(localStorage.getItem('kazna_envelopes')) || [];
 let subscriptions = JSON.parse(localStorage.getItem('kazna_subscriptions')) || [];
 let debts = JSON.parse(localStorage.getItem('kazna_debts')) || [];
 let events = JSON.parse(localStorage.getItem('kazna_events')) || [];
-let wishlist = JSON.parse(localStorage.getItem('kazna_wishlist')) || [];
 let investments = JSON.parse(localStorage.getItem('kazna_investments')) || [];
 let currentType = 'income';
 let currentGoalId = null;
@@ -66,7 +65,6 @@ function showScreen(screenName) {
   if (screenName === 'subscriptions') renderSubscriptions();
   if (screenName === 'debts') renderDebts();
   if (screenName === 'events') renderEvents();
-  if (screenName === 'wishlist') renderWishlist();
   if (screenName === 'investments') renderInvestments();
 }
 
@@ -126,10 +124,19 @@ function addTransaction() {
       date: transactionDate.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' })
     };
     transactions.unshift(transaction);
+    updateEnvelopeAfterExpense(category, amount);
   }
   saveTransactions();
   updateUI();
   closeForm();
+}
+
+function updateEnvelopeAfterExpense(category, amount) {
+  const envelope = envelopes.find(e => e.name === category);
+  if (envelope) {
+    envelope.spent += amount;
+    saveEnvelopes();
+  }
 }
 
 function editTransaction(id) {
@@ -718,6 +725,7 @@ function renderDebts() {
     list.appendChild(card);
   });
 }
+
 // ===== СОБЫТИЯ =====
 function openEventForm() {
   document.getElementById('event-modal').classList.add('active');
@@ -784,66 +792,6 @@ function renderEvents() {
       </div>
       <div style="font-size:13px;color:#888;">${e.category}${e.note ? ' • ' + e.note : ''}</div>
       ${daysLeft >= 0 ? `<div style="font-size:12px;color:#2196f3;margin-top:8px;">Через ${daysLeft} дн.</div>` : ''}
-    `;
-    list.appendChild(card);
-  });
-}
-
-// ===== СПИСОК ЖЕЛАНИЙ =====
-function openWishForm() {
-  document.getElementById('wish-modal').classList.add('active');
-  document.getElementById('wish-name').value = '';
-  document.getElementById('wish-price').value = '';
-}
-
-function closeWishForm() {
-  document.getElementById('wish-modal').classList.remove('active');
-}
-
-function addWish() {
-  const name = document.getElementById('wish-name').value;
-  const price = parseFloat(document.getElementById('wish-price').value);
-  if (!name || !price || price <= 0) {
-    alert('Введи название и цену!');
-    return;
-  }
-  const wish = {
-    id: Date.now(),
-    name: name,
-    price: price
-  };
-  wishlist.unshift(wish);
-  saveWishlist();
-  renderWishlist();
-  closeWishForm();
-}
-
-function deleteWish(id) {
-  if (confirm('Удалить желание?')) {
-    wishlist = wishlist.filter(w => w.id !== id);
-    saveWishlist();
-    renderWishlist();
-  }
-}
-
-function renderWishlist() {
-  const list = document.getElementById('wishlist-list');
-  if (wishlist.length === 0) {
-    list.innerHTML = '<div class="empty-message">Список пуст. Добавь желание!</div>';
-    return;
-  }
-  list.innerHTML = '';
-  wishlist.forEach(w => {
-    const card = document.createElement('div');
-    card.className = 'wish-card';
-    card.innerHTML = `
-      <div class="wish-card-header">
-        <span class="wish-card-title">${w.name}</span>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span class="wish-card-amount">${w.price.toLocaleString('ru-RU')} ₽</span>
-          <button class="btn-delete" onclick="deleteWish(${w.id})">✕</button>
-        </div>
-      </div>
     `;
     list.appendChild(card);
   });
@@ -1048,7 +996,6 @@ function exportData() {
     subscriptions: subscriptions,
     debts: debts,
     events: events,
-    wishlist: wishlist,
     investments: investments,
     exportedAt: new Date().toISOString()
   };
@@ -1076,7 +1023,6 @@ function importData(input) {
       if (data.subscriptions) { subscriptions = data.subscriptions; saveSubscriptions(); }
       if (data.debts) { debts = data.debts; saveDebts(); }
       if (data.events) { events = data.events; saveEvents(); }
-      if (data.wishlist) { wishlist = data.wishlist; saveWishlist(); }
       if (data.investments) { investments = data.investments; saveInvestments(); }
       updateUI();
       renderGoals();
@@ -1086,7 +1032,6 @@ function importData(input) {
       renderSubscriptions();
       renderDebts();
       renderEvents();
-      renderWishlist();
       renderInvestments();
       alert('Данные успешно импортированы!');
     } catch (err) {
@@ -1105,7 +1050,6 @@ function saveEnvelopes() { localStorage.setItem('kazna_envelopes', JSON.stringif
 function saveSubscriptions() { localStorage.setItem('kazna_subscriptions', JSON.stringify(subscriptions)); }
 function saveDebts() { localStorage.setItem('kazna_debts', JSON.stringify(debts)); }
 function saveEvents() { localStorage.setItem('kazna_events', JSON.stringify(events)); }
-function saveWishlist() { localStorage.setItem('kazna_wishlist', JSON.stringify(wishlist)); }
 function saveInvestments() { localStorage.setItem('kazna_investments', JSON.stringify(investments)); }
 
 // ===== ПОДСЧЁТ БАЛАНСА =====
