@@ -239,6 +239,7 @@ function renderGoals() {
     goalsList.appendChild(card);
   });
 }
+
 function changeShiftMonth(delta) {
   shiftMonth += delta;
   if (shiftMonth > 11) {
@@ -493,6 +494,28 @@ function renderStats() {
   `).join('');
   document.getElementById('stats-legend').innerHTML = legendHtml;
 }
+
+function saveNotificationTimes() {
+  const times = {
+    morning: document.getElementById('morning-time').value,
+    shift: document.getElementById('shift-time').value,
+    evening: document.getElementById('evening-time').value
+  };
+  localStorage.setItem('kazna_notification_times', JSON.stringify(times));
+}
+
+function getNotificationTimes() {
+  const saved = JSON.parse(localStorage.getItem('kazna_notification_times'));
+  if (saved) {
+    return saved;
+  }
+  return {
+    morning: '09:00',
+    shift: '13:00',
+    evening: '21:00'
+  };
+}
+
 function toggleNotifications() {
   if (!notificationsEnabled) {
     if ('Notification' in window) {
@@ -535,18 +558,18 @@ function scheduleNotifications() {
   if (!notificationsEnabled) return;
   setInterval(() => {
     const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    if (hours === 9 && minutes === 0) {
+    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const times = getNotificationTimes();
+    if (currentTime === times.morning) {
       sendMorningNotification();
     }
-    if (hours === 13 && minutes === 0) {
+    if (currentTime === times.shift) {
       sendShiftNotification();
     }
-    if (hours === 21 && minutes === 0) {
+    if (currentTime === times.evening) {
       sendEveningNotification();
     }
-  }, 60000);
+  }, 30000);
 }
 
 function sendMorningNotification() {

@@ -179,7 +179,30 @@
       <p>Управление данными</p>
     </header>
 
-    <section class="settings-container">
+        <div class="settings-card">
+        <h3>Напоминания</h3>
+        <p class="settings-desc">Выбери время для напоминаний</p>
+        
+        <div class="time-setting">
+          <label>Утреннее (цель)</label>
+          <input type="time" id="morning-time" value="09:00" onchange="saveNotificationTimes()">
+        </div>
+        
+        <div class="time-setting">
+          <label>Обеденное (смена)</label>
+          <input type="time" id="shift-time" value="13:00" onchange="saveNotificationTimes()">
+        </div>
+        
+        <div class="time-setting">
+          <label>Вечернее (операции)</label>
+          <input type="time" id="evening-time" value="21:00" onchange="saveNotificationTimes()">
+        </div>
+        
+        <div class="settings-buttons" style="margin-top:16px;">
+          <button class="btn btn-save" id="notif-btn" onclick="toggleNotifications()">Включить напоминания</button>
+        </div>
+      </div>
+  <section class="settings-container">
       <div class="settings-card">
         <h3>Напоминания</h3>
         <p class="settings-desc">Утром — про цель, днём — про смену, вечером — про операции</p>
