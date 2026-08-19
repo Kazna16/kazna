@@ -1100,6 +1100,13 @@ function renderTransactions() {
     transactionList.appendChild(li);
   });
 }
+function toggleMoreMenu() {
+  document.getElementById('more-menu').classList.toggle('active');
+}
+
+function closeMoreMenu() {
+  document.getElementById('more-menu').classList.remove('active');
+}
 
 // ===== ЗАПУСК =====
 updateUI();

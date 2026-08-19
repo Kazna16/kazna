@@ -353,19 +353,48 @@
     </section>
   </div>
 
-  <!-- НАВИГАЦИЯ -->
+  <!-- НИЖНЯЯ НАВИГАЦИЯ -->
   <nav class="bottom-nav">
-    <button class="nav-btn active" id="nav-home" onclick="showScreen('home')">Главная</button>
-    <button class="nav-btn" id="nav-goals" onclick="showScreen('goals')">Цели</button>
-    <button class="nav-btn" id="nav-shifts" onclick="showScreen('shifts')">Смены</button>
-    <button class="nav-btn" id="nav-stats" onclick="showScreen('stats')">Статы</button>
-    <button class="nav-btn" id="nav-envelopes" onclick="showScreen('envelopes')">Копилки</button>
-    <button class="nav-btn" id="nav-subscriptions" onclick="showScreen('subscriptions')">Подписки</button>
-    <button class="nav-btn" id="nav-debts" onclick="showScreen('debts')">Долги</button>
-    <button class="nav-btn" id="nav-events" onclick="showScreen('events')">События</button>
-    <button class="nav-btn" id="nav-investments" onclick="showScreen('investments')">Инвест</button>
-    <button class="nav-btn" id="nav-settings" onclick="showScreen('settings')">⚙</button>
+    <button class="nav-btn active" id="nav-home" onclick="showScreen('home')">🏠 Главная</button>
+    <button class="nav-btn" id="nav-goals" onclick="showScreen('goals')">💰 Цели</button>
+    <button class="nav-btn" id="nav-shifts" onclick="showScreen('shifts')">📅 Смены</button>
+    <button class="nav-btn" id="nav-stats" onclick="showScreen('stats')">📊 Статы</button>
+    <button class="nav-btn" id="nav-more" onclick="toggleMoreMenu()">⚙ Ещё</button>
   </nav>
+
+  <!-- МЕНЮ "ЕЩЁ" -->
+  <div class="more-menu" id="more-menu">
+    <div class="more-menu-header">
+      <span>Все разделы</span>
+      <button class="btn-delete" onclick="toggleMoreMenu()">✕</button>
+    </div>
+    <div class="more-menu-grid">
+      <button class="more-menu-item" onclick="showScreen('envelopes'); closeMoreMenu()">
+        <span class="more-menu-icon">📦</span>
+        <span>Копилки</span>
+      </button>
+      <button class="more-menu-item" onclick="showScreen('subscriptions'); closeMoreMenu()">
+        <span class="more-menu-icon">📆</span>
+        <span>Подписки</span>
+      </button>
+      <button class="more-menu-item" onclick="showScreen('debts'); closeMoreMenu()">
+        <span class="more-menu-icon">💸</span>
+        <span>Долги</span>
+      </button>
+      <button class="more-menu-item" onclick="showScreen('events'); closeMoreMenu()">
+        <span class="more-menu-icon">🎉</span>
+        <span>События</span>
+      </button>
+      <button class="more-menu-item" onclick="showScreen('investments'); closeMoreMenu()">
+        <span class="more-menu-icon">📈</span>
+        <span>Инвестиции</span>
+      </button>
+      <button class="more-menu-item" onclick="showScreen('settings'); closeMoreMenu()">
+        <span class="more-menu-icon">⚙️</span>
+        <span>Настройки</span>
+      </button>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
