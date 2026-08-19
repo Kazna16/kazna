@@ -8,51 +8,198 @@
 </head>
 <body>
 
-  <header class="header">
-    <h1>Казна</h1>
-    <p>Твоя казна — твои правила</p>
-  </header>
+  <!-- ЭКРАН: ГЛАВНАЯ -->
+  <div id="screen-home" class="screen active">
+    <header class="header">
+      <h1>Казна</h1>
+      <p>Твоя казна — твои правила</p>
+    </header>
 
-  <section class="balance-card">
-    <span class="balance-label">Баланс</span>
-    <span class="balance-amount" id="balance">0 ₽</span>
-    <div class="balance-info">
-      <span class="income" id="income">Доход: 0 ₽</span>
-      <span class="expense" id="expense">Расход: 0 ₽</span>
-    </div>
-  </section>
-
-  <section class="actions">
-    <button class="btn btn-income" onclick="openForm('income')">Доход</button>
-    <button class="btn btn-expense" onclick="openForm('expense')">Расход</button>
-  </section>
-
-  <section class="transactions">
-    <h2>Последние операции</h2>
-    <ul id="transaction-list"></ul>
-  </section>
-
-  <section class="modal" id="modal">
-    <div class="modal-content">
-      <h2 id="modal-title">Добавить</h2>
-      
-      <input type="number" id="amount" placeholder="Сумма">
-      
-      <select id="category">
-        <option value="Зарплата">Зарплата</option>
-        <option value="Еда">Еда</option>
-        <option value="Транспорт">Транспорт</option>
-        <option value="Другое">Другое</option>
-      </select>
-      
-      <input type="text" id="note" placeholder="Заметка">
-      
-      <div class="modal-buttons">
-        <button class="btn btn-save" onclick="addTransaction()">Сохранить</button>
-        <button class="btn btn-cancel" onclick="closeForm()">Отмена</button>
+    <section class="balance-card">
+      <span class="balance-label">Баланс</span>
+      <span class="balance-amount" id="balance">0 ₽</span>
+      <div class="balance-info">
+        <span class="income" id="income">Доход: 0 ₽</span>
+        <span class="expense" id="expense">Расход: 0 ₽</span>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <section class="actions">
+      <button class="btn btn-income" onclick="openForm('income')">Доход</button>
+      <button class="btn btn-expense" onclick="openForm('expense')">Расход</button>
+    </section>
+
+    <section class="transactions">
+      <h2>Последние операции</h2>
+      <ul id="transaction-list"></ul>
+    </section>
+
+    <section class="modal" id="modal">
+      <div class="modal-content">
+        <h2 id="modal-title">Добавить</h2>
+        <input type="number" id="amount" placeholder="Сумма">
+        <select id="category">
+          <option value="Зарплата">Зарплата</option>
+          <option value="Подработка">Подработка</option>
+          <option value="Еда">Еда</option>
+          <option value="Транспорт">Транспорт</option>
+          <option value="Развлечения">Развлечения</option>
+          <option value="Здоровье">Здоровье</option>
+          <option value="Одежда">Одежда</option>
+          <option value="Дом">Дом</option>
+          <option value="Другое">Другое</option>
+        </select>
+        <input type="text" id="note" placeholder="Что именно?">
+        <input type="text" id="comment" placeholder="Комментарий">
+        <input type="date" id="transaction-date">
+        <div class="modal-buttons">
+          <button class="btn btn-save" onclick="addTransaction()">Сохранить</button>
+          <button class="btn btn-cancel" onclick="closeForm()">Отмена</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ЭКРАН: ЦЕЛИ -->
+  <div id="screen-goals" class="screen">
+    <header class="header">
+      <h1>Цели</h1>
+      <p>Копи на мечту</p>
+    </header>
+
+    <section class="actions">
+      <button class="btn btn-income" onclick="openGoalForm()">Новая цель</button>
+    </section>
+
+    <section class="goals-list" id="goals-list"></section>
+
+    <section class="modal" id="goal-modal">
+      <div class="modal-content">
+        <h2>Новая цель</h2>
+        <input type="text" id="goal-name" placeholder="Название цели">
+        <input type="number" id="goal-target" placeholder="Сумма цели">
+        <input type="date" id="goal-deadline">
+        <div class="modal-buttons">
+          <button class="btn btn-save" onclick="addGoal()">Создать</button>
+          <button class="btn btn-cancel" onclick="closeGoalForm()">Отмена</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="modal" id="goal-add-modal">
+      <div class="modal-content">
+        <h2>Пополнить цель</h2>
+        <p id="goal-add-title" style="margin-bottom:16px;color:#2196f3;"></p>
+        <input type="number" id="goal-add-amount" placeholder="Сумма">
+        <div class="modal-buttons">
+          <button class="btn btn-save" onclick="addToGoal()">Добавить</button>
+          <button class="btn btn-cancel" onclick="closeGoalAddForm()">Отмена</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ЭКРАН: СМЕНЫ -->
+  <div id="screen-shifts" class="screen">
+    <header class="header">
+      <h1>Смены</h1>
+      <p>График работы</p>
+    </header>
+
+    <section class="calendar-container">
+      <div class="calendar-header">
+        <button class="month-nav-btn" onclick="changeShiftMonth(-1)">←</button>
+        <span class="month-display" id="shift-month-display">Август 2026</span>
+        <button class="month-nav-btn" onclick="changeShiftMonth(1)">→</button>
+      </div>
+      <div class="calendar-weekdays">
+        <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+      </div>
+      <div class="calendar-days" id="calendar-days"></div>
+    </section>
+
+    <section class="shifts-stats">
+      <div class="stat-card">
+        <span class="stat-label">Всего часов</span>
+        <span class="stat-value" id="total-hours">0 ч</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Заработано</span>
+        <span class="stat-value" id="total-shift-money">0 ₽</span>
+      </div>
+    </section>
+
+    <section class="actions">
+      <button class="btn btn-income" onclick="openShiftForm()">Добавить смену</button>
+    </section>
+
+    <section class="shifts-list" id="shifts-list"></section>
+
+    <section class="modal" id="shift-modal">
+      <div class="modal-content">
+        <h2>Новая смена</h2>
+        <input type="date" id="shift-date">
+        <input type="time" id="shift-start">
+        <input type="time" id="shift-end">
+        <input type="number" id="shift-rate" placeholder="Ставка в час (₽)">
+        <div class="modal-buttons">
+          <button class="btn btn-save" onclick="addShift()">Сохранить</button>
+          <button class="btn btn-cancel" onclick="closeShiftForm()">Отмена</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ЭКРАН: СТАТИСТИКА -->
+  <div id="screen-stats" class="screen">
+    <header class="header">
+      <h1>Статистика</h1>
+      <p>Куда уходят деньги</p>
+    </header>
+
+    <section class="month-filter">
+      <button class="month-nav-btn" onclick="changeMonth(-1)">←</button>
+      <span class="month-display" id="month-display">Август 2026</span>
+      <button class="month-nav-btn" onclick="changeMonth(1)">→</button>
+    </section>
+
+    <section class="stats-container">
+      <div class="chart-container">
+        <canvas id="expense-chart" width="300" height="300"></canvas>
+      </div>
+      <div class="stats-summary" id="stats-summary"></div>
+      <div class="stats-legend" id="stats-legend"></div>
+    </section>
+  </div>
+
+  <!-- ЭКРАН: НАСТРОЙКИ -->
+  <div id="screen-settings" class="screen">
+    <header class="header">
+      <h1>Настройки</h1>
+      <p>Управление данными</p>
+    </header>
+
+    <section class="settings-container">
+      <div class="settings-card">
+        <h3>Резервное копирование</h3>
+        <p class="settings-desc">Сохрани все данные в файл или восстанови из файла</p>
+        <div class="settings-buttons">
+          <button class="btn btn-save" onclick="exportData()">Экспорт</button>
+          <button class="btn btn-cancel" onclick="document.getElementById('import-file').click()">Импорт</button>
+        </div>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+      </div>
+    </section>
+  </div>
+
+  <!-- НАВИГАЦИЯ -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="showScreen('home')">Главная</button>
+    <button class="nav-btn" id="nav-goals" onclick="showScreen('goals')">Цели</button>
+    <button class="nav-btn" id="nav-shifts" onclick="showScreen('shifts')">Смены</button>
+    <button class="nav-btn" id="nav-stats" onclick="showScreen('stats')">Статы</button>
+    <button class="nav-btn" id="nav-settings" onclick="showScreen('settings')">⚙</button>
+  </nav>
 
   <script src="app.js"></script>
 </body>
