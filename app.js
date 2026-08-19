@@ -1,10 +1,17 @@
 let transactions = JSON.parse(localStorage.getItem('kazna_transactions')) || [];
 let goals = JSON.parse(localStorage.getItem('kazna_goals')) || [];
 let shifts = JSON.parse(localStorage.getItem('kazna_shifts')) || [];
+let envelopes = JSON.parse(localStorage.getItem('kazna_envelopes')) || [];
+let subscriptions = JSON.parse(localStorage.getItem('kazna_subscriptions')) || [];
+let debts = JSON.parse(localStorage.getItem('kazna_debts')) || [];
+let events = JSON.parse(localStorage.getItem('kazna_events')) || [];
+let wishlist = JSON.parse(localStorage.getItem('kazna_wishlist')) || [];
+let investments = JSON.parse(localStorage.getItem('kazna_investments')) || [];
 let currentType = 'income';
 let currentGoalId = null;
 let editingTransactionId = null;
 let notificationsEnabled = JSON.parse(localStorage.getItem('kazna_notifications')) || false;
+let currentDebtType = 'to-me';
 
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
@@ -55,6 +62,12 @@ function showScreen(screenName) {
   if (screenName === 'settings') {
     updateNotificationButton();
   }
+  if (screenName === 'envelopes') renderEnvelopes();
+  if (screenName === 'subscriptions') renderSubscriptions();
+  if (screenName === 'debts') renderDebts();
+  if (screenName === 'events') renderEvents();
+  if (screenName === 'wishlist') renderWishlist();
+  if (screenName === 'investments') renderInvestments();
 }
 
 function openForm(type) {
@@ -239,7 +252,6 @@ function renderGoals() {
     goalsList.appendChild(card);
   });
 }
-
 function changeShiftMonth(delta) {
   shiftMonth += delta;
   if (shiftMonth > 11) {
@@ -494,7 +506,421 @@ function renderStats() {
   `).join('');
   document.getElementById('stats-legend').innerHTML = legendHtml;
 }
+// ===== КОПИЛКИ =====
+function openEnvelopeForm() {
+  document.getElementById('envelope-modal').classList.add('active');
+  document.getElementById('envelope-name').value = '';
+  document.getElementById('envelope-budget').value = '';
+}
 
+function closeEnvelopeForm() {
+  document.getElementById('envelope-modal').classList.remove('active');
+}
+
+function addEnvelope() {
+  const name = document.getElementById('envelope-name').value;
+  const budget = parseFloat(document.getElementById('envelope-budget').value);
+  if (!name || !budget || budget <= 0) {
+    alert('Введи название и бюджет!');
+    return;
+  }
+  const envelope = {
+    id: Date.now(),
+    name: name,
+    budget: budget,
+    spent: 0
+  };
+  envelopes.unshift(envelope);
+  saveEnvelopes();
+  renderEnvelopes();
+  closeEnvelopeForm();
+}
+
+function deleteEnvelope(id) {
+  if (confirm('Удалить копилку?')) {
+    envelopes = envelopes.filter(e => e.id !== id);
+    saveEnvelopes();
+    renderEnvelopes();
+  }
+}
+
+function spendEnvelope(id) {
+  const envelope = envelopes.find(e => e.id === id);
+  const amount = prompt(`Сколько потратил из "${envelope.name}"?`);
+  if (amount && parseFloat(amount) > 0) {
+    envelope.spent += parseFloat(amount);
+    saveEnvelopes();
+    renderEnvelopes();
+  }
+}
+
+function renderEnvelopes() {
+  const list = document.getElementById('envelopes-list');
+  if (envelopes.length === 0) {
+    list.innerHTML = '<div class="empty-message">Нет копилок. Создай первую!</div>';
+    return;
+  }
+  list.innerHTML = '';
+  envelopes.forEach(e => {
+    const remaining = e.budget - e.spent;
+    const percent = Math.min(100, (e.spent / e.budget) * 100);
+    const card = document.createElement('div');
+    card.className = 'envelope-card';
+    card.innerHTML = `
+      <div class="envelope-card-header">
+        <span class="envelope-card-title">${e.name}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="envelope-card-amount">${remaining.toLocaleString('ru-RU')} / ${e.budget.toLocaleString('ru-RU')} ₽</span>
+          <button class="btn-delete" onclick="deleteEnvelope(${e.id})">✕</button>
+        </div>
+      </div>
+      <div class="envelope-progress-bar">
+        <div class="envelope-progress-fill" style="width:${percent}%"></div>
+      </div>
+      <div class="envelope-card-footer">
+        <span class="envelope-percent">Потрачено: ${e.spent.toLocaleString('ru-RU')} ₽ (${percent.toFixed(0)}%)</span>
+        <button class="btn-add-to-goal" onclick="spendEnvelope(${e.id})">−</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+// ===== ПОДПИСКИ =====
+function openSubscriptionForm() {
+  document.getElementById('subscription-modal').classList.add('active');
+  document.getElementById('subscription-name').value = '';
+  document.getElementById('subscription-amount').value = '';
+  document.getElementById('subscription-date').value = '';
+}
+
+function closeSubscriptionForm() {
+  document.getElementById('subscription-modal').classList.remove('active');
+}
+
+function addSubscription() {
+  const name = document.getElementById('subscription-name').value;
+  const amount = parseFloat(document.getElementById('subscription-amount').value);
+  const date = document.getElementById('subscription-date').value;
+  if (!name || !amount || amount <= 0 || !date) {
+    alert('Заполни все поля!');
+    return;
+  }
+  const subscription = {
+    id: Date.now(),
+    name: name,
+    amount: amount,
+    date: date
+  };
+  subscriptions.unshift(subscription);
+  saveSubscriptions();
+  renderSubscriptions();
+  closeSubscriptionForm();
+}
+
+function deleteSubscription(id) {
+  if (confirm('Удалить подписку?')) {
+    subscriptions = subscriptions.filter(s => s.id !== id);
+    saveSubscriptions();
+    renderSubscriptions();
+  }
+}
+
+function renderSubscriptions() {
+  const list = document.getElementById('subscriptions-list');
+  if (subscriptions.length === 0) {
+    list.innerHTML = '<div class="empty-message">Нет подписок. Добавь первую!</div>';
+    return;
+  }
+  list.innerHTML = '';
+  subscriptions.forEach(s => {
+    const formattedDate = new Date(s.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+    const card = document.createElement('div');
+    card.className = 'subscription-card';
+    card.innerHTML = `
+      <div class="subscription-card-header">
+        <span class="subscription-card-title">${s.name}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="subscription-card-amount">${s.amount.toLocaleString('ru-RU')} ₽/мес</span>
+          <button class="btn-delete" onclick="deleteSubscription(${s.id})">✕</button>
+        </div>
+      </div>
+      <div style="font-size:13px;color:#888;">Списание: ${formattedDate}</div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+// ===== ДОЛГИ =====
+function openDebtForm(type) {
+  currentDebtType = type;
+  document.getElementById('debt-modal-title').textContent = type === 'to-me' ? 'Мне должны' : 'Я должен';
+  document.getElementById('debt-modal').classList.add('active');
+  document.getElementById('debt-name').value = '';
+  document.getElementById('debt-amount').value = '';
+  document.getElementById('debt-note').value = '';
+}
+
+function closeDebtForm() {
+  document.getElementById('debt-modal').classList.remove('active');
+}
+
+function addDebt() {
+  const name = document.getElementById('debt-name').value;
+  const amount = parseFloat(document.getElementById('debt-amount').value);
+  const note = document.getElementById('debt-note').value;
+  if (!name || !amount || amount <= 0) {
+    alert('Введи имя и сумму!');
+    return;
+  }
+  const debt = {
+    id: Date.now(),
+    name: name,
+    amount: amount,
+    note: note,
+    type: currentDebtType
+  };
+  debts.unshift(debt);
+  saveDebts();
+  renderDebts();
+  closeDebtForm();
+}
+
+function deleteDebt(id) {
+  if (confirm('Удалить долг?')) {
+    debts = debts.filter(d => d.id !== id);
+    saveDebts();
+    renderDebts();
+  }
+}
+
+function renderDebts() {
+  const list = document.getElementById('debts-list');
+  if (debts.length === 0) {
+    list.innerHTML = '<div class="empty-message">Нет долгов. Всё чисто!</div>';
+    return;
+  }
+  list.innerHTML = '';
+  debts.forEach(d => {
+    const isToMe = d.type === 'to-me';
+    const card = document.createElement('div');
+    card.className = 'debt-card';
+    card.innerHTML = `
+      <div class="debt-card-header">
+        <span class="debt-card-title">${isToMe ? '🟢' : '🔴'} ${d.name}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="debt-card-amount" style="color:${isToMe ? '#4caf50' : '#f44336'}">${isToMe ? '+' : '-'}${d.amount.toLocaleString('ru-RU')} ₽</span>
+          <button class="btn-delete" onclick="deleteDebt(${d.id})">✕</button>
+        </div>
+      </div>
+      ${d.note ? `<div style="font-size:13px;color:#888;">${d.note}</div>` : ''}
+    `;
+    list.appendChild(card);
+  });
+}
+// ===== СОБЫТИЯ =====
+function openEventForm() {
+  document.getElementById('event-modal').classList.add('active');
+  document.getElementById('event-name').value = '';
+  document.getElementById('event-category').value = 'День рождения';
+  document.getElementById('event-date').value = '';
+  document.getElementById('event-note').value = '';
+}
+
+function closeEventForm() {
+  document.getElementById('event-modal').classList.remove('active');
+}
+
+function addEvent() {
+  const name = document.getElementById('event-name').value;
+  const category = document.getElementById('event-category').value;
+  const date = document.getElementById('event-date').value;
+  const note = document.getElementById('event-note').value;
+  if (!name || !date) {
+    alert('Введи название и дату!');
+    return;
+  }
+  const event = {
+    id: Date.now(),
+    name: name,
+    category: category,
+    date: date,
+    note: note
+  };
+  events.unshift(event);
+  saveEvents();
+  renderEvents();
+  closeEventForm();
+}
+
+function deleteEvent(id) {
+  if (confirm('Удалить событие?')) {
+    events = events.filter(e => e.id !== id);
+    saveEvents();
+    renderEvents();
+  }
+}
+
+function renderEvents() {
+  const list = document.getElementById('events-list');
+  if (events.length === 0) {
+    list.innerHTML = '<div class="empty-message">Нет событий. Добавь первое!</div>';
+    return;
+  }
+  list.innerHTML = '';
+  events.sort((a, b) => new Date(a.date) - new Date(b.date));
+  events.forEach(e => {
+    const formattedDate = new Date(e.date).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', year: 'numeric' });
+    const daysLeft = Math.ceil((new Date(e.date) - new Date()) / (1000 * 60 * 60 * 24));
+    const card = document.createElement('div');
+    card.className = 'event-card';
+    card.innerHTML = `
+      <div class="event-card-header">
+        <span class="event-card-title">${e.name}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="event-card-amount">${formattedDate}</span>
+          <button class="btn-delete" onclick="deleteEvent(${e.id})">✕</button>
+        </div>
+      </div>
+      <div style="font-size:13px;color:#888;">${e.category}${e.note ? ' • ' + e.note : ''}</div>
+      ${daysLeft >= 0 ? `<div style="font-size:12px;color:#2196f3;margin-top:8px;">Через ${daysLeft} дн.</div>` : ''}
+    `;
+    list.appendChild(card);
+  });
+}
+
+// ===== СПИСОК ЖЕЛАНИЙ =====
+function openWishForm() {
+  document.getElementById('wish-modal').classList.add('active');
+  document.getElementById('wish-name').value = '';
+  document.getElementById('wish-price').value = '';
+}
+
+function closeWishForm() {
+  document.getElementById('wish-modal').classList.remove('active');
+}
+
+function addWish() {
+  const name = document.getElementById('wish-name').value;
+  const price = parseFloat(document.getElementById('wish-price').value);
+  if (!name || !price || price <= 0) {
+    alert('Введи название и цену!');
+    return;
+  }
+  const wish = {
+    id: Date.now(),
+    name: name,
+    price: price
+  };
+  wishlist.unshift(wish);
+  saveWishlist();
+  renderWishlist();
+  closeWishForm();
+}
+
+function deleteWish(id) {
+  if (confirm('Удалить желание?')) {
+    wishlist = wishlist.filter(w => w.id !== id);
+    saveWishlist();
+    renderWishlist();
+  }
+}
+
+function renderWishlist() {
+  const list = document.getElementById('wishlist-list');
+  if (wishlist.length === 0) {
+    list.innerHTML = '<div class="empty-message">Список пуст. Добавь желание!</div>';
+    return;
+  }
+  list.innerHTML = '';
+  wishlist.forEach(w => {
+    const card = document.createElement('div');
+    card.className = 'wish-card';
+    card.innerHTML = `
+      <div class="wish-card-header">
+        <span class="wish-card-title">${w.name}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="wish-card-amount">${w.price.toLocaleString('ru-RU')} ₽</span>
+          <button class="btn-delete" onclick="deleteWish(${w.id})">✕</button>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+// ===== ИНВЕСТИЦИИ =====
+function openInvestmentForm() {
+  document.getElementById('investment-modal').classList.add('active');
+  document.getElementById('investment-name').value = '';
+  document.getElementById('investment-amount').value = '';
+}
+
+function closeInvestmentForm() {
+  document.getElementById('investment-modal').classList.remove('active');
+}
+
+function addInvestment() {
+  const name = document.getElementById('investment-name').value;
+  const amount = parseFloat(document.getElementById('investment-amount').value);
+  if (!name || !amount || amount <= 0) {
+    alert('Введи название и сумму!');
+    return;
+  }
+  const investment = {
+    id: Date.now(),
+    name: name,
+    amount: amount
+  };
+  investments.unshift(investment);
+  saveInvestments();
+  renderInvestments();
+  closeInvestmentForm();
+}
+
+function deleteInvestment(id) {
+  if (confirm('Удалить инвестицию?')) {
+    investments = investments.filter(i => i.id !== id);
+    saveInvestments();
+    renderInvestments();
+  }
+}
+
+function renderInvestments() {
+  const list = document.getElementById('investments-list');
+  if (investments.length === 0) {
+    list.innerHTML = '<div class="empty-message">Нет инвестиций. Добавь первую!</div>';
+    return;
+  }
+  list.innerHTML = '';
+  let totalInvested = 0;
+  investments.forEach(i => totalInvested += i.amount);
+  investments.forEach(i => {
+    const card = document.createElement('div');
+    card.className = 'investment-card';
+    card.innerHTML = `
+      <div class="investment-card-header">
+        <span class="investment-card-title">${i.name}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="investment-card-amount">${i.amount.toLocaleString('ru-RU')} ₽</span>
+          <button class="btn-delete" onclick="deleteInvestment(${i.id})">✕</button>
+        </div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+  const totalCard = document.createElement('div');
+  totalCard.className = 'investment-card';
+  totalCard.style.borderColor = '#2196f3';
+  totalCard.innerHTML = `
+    <div class="investment-card-header">
+      <span class="investment-card-title">Всего вложено</span>
+      <span class="investment-card-amount">${totalInvested.toLocaleString('ru-RU')} ₽</span>
+    </div>
+  `;
+  list.appendChild(totalCard);
+}
+// ===== НАПОМИНАНИЯ =====
 function saveNotificationTimes() {
   const times = {
     morning: document.getElementById('morning-time').value,
@@ -612,11 +1038,18 @@ function sendEveningNotification() {
   }
 }
 
+// ===== ЭКСПОРТ / ИМПОРТ =====
 function exportData() {
   const data = {
     transactions: transactions,
     goals: goals,
     shifts: shifts,
+    envelopes: envelopes,
+    subscriptions: subscriptions,
+    debts: debts,
+    events: events,
+    wishlist: wishlist,
+    investments: investments,
     exportedAt: new Date().toISOString()
   };
   const json = JSON.stringify(data, null, 2);
@@ -636,22 +1069,25 @@ function importData(input) {
   reader.onload = function(e) {
     try {
       const data = JSON.parse(e.target.result);
-      if (data.transactions) {
-        transactions = data.transactions;
-        saveTransactions();
-      }
-      if (data.goals) {
-        goals = data.goals;
-        saveGoals();
-      }
-      if (data.shifts) {
-        shifts = data.shifts;
-        saveShifts();
-      }
+      if (data.transactions) { transactions = data.transactions; saveTransactions(); }
+      if (data.goals) { goals = data.goals; saveGoals(); }
+      if (data.shifts) { shifts = data.shifts; saveShifts(); }
+      if (data.envelopes) { envelopes = data.envelopes; saveEnvelopes(); }
+      if (data.subscriptions) { subscriptions = data.subscriptions; saveSubscriptions(); }
+      if (data.debts) { debts = data.debts; saveDebts(); }
+      if (data.events) { events = data.events; saveEvents(); }
+      if (data.wishlist) { wishlist = data.wishlist; saveWishlist(); }
+      if (data.investments) { investments = data.investments; saveInvestments(); }
       updateUI();
       renderGoals();
       renderShifts();
       renderCalendar();
+      renderEnvelopes();
+      renderSubscriptions();
+      renderDebts();
+      renderEvents();
+      renderWishlist();
+      renderInvestments();
       alert('Данные успешно импортированы!');
     } catch (err) {
       alert('Ошибка импорта! Неверный файл.');
@@ -661,18 +1097,18 @@ function importData(input) {
   input.value = '';
 }
 
-function saveTransactions() {
-  localStorage.setItem('kazna_transactions', JSON.stringify(transactions));
-}
+// ===== СОХРАНЕНИЕ =====
+function saveTransactions() { localStorage.setItem('kazna_transactions', JSON.stringify(transactions)); }
+function saveGoals() { localStorage.setItem('kazna_goals', JSON.stringify(goals)); }
+function saveShifts() { localStorage.setItem('kazna_shifts', JSON.stringify(shifts)); }
+function saveEnvelopes() { localStorage.setItem('kazna_envelopes', JSON.stringify(envelopes)); }
+function saveSubscriptions() { localStorage.setItem('kazna_subscriptions', JSON.stringify(subscriptions)); }
+function saveDebts() { localStorage.setItem('kazna_debts', JSON.stringify(debts)); }
+function saveEvents() { localStorage.setItem('kazna_events', JSON.stringify(events)); }
+function saveWishlist() { localStorage.setItem('kazna_wishlist', JSON.stringify(wishlist)); }
+function saveInvestments() { localStorage.setItem('kazna_investments', JSON.stringify(investments)); }
 
-function saveGoals() {
-  localStorage.setItem('kazna_goals', JSON.stringify(goals));
-}
-
-function saveShifts() {
-  localStorage.setItem('kazna_shifts', JSON.stringify(shifts));
-}
-
+// ===== ПОДСЧЁТ БАЛАНСА =====
 function calculateBalance() {
   let income = 0;
   let expense = 0;
@@ -686,6 +1122,7 @@ function calculateBalance() {
   return { income, expense, balance: income - expense };
 }
 
+// ===== ОБНОВЛЕНИЕ ИНТЕРФЕЙСА =====
 function updateUI() {
   const { income, expense, balance } = calculateBalance();
   balanceEl.textContent = `${balance.toLocaleString('ru-RU')} ₽`;
@@ -720,6 +1157,7 @@ function renderTransactions() {
   });
 }
 
+// ===== ЗАПУСК =====
 updateUI();
 updateNotificationButton();
 

@@ -171,6 +171,172 @@
       <div class="stats-legend" id="stats-legend"></div>
     </section>
   </div>
+  <!-- ЭКРАН: КОПИЛКИ -->
+  <div id="screen-envelopes" class="screen">
+    <header class="header">
+      <h1>Копилки</h1>
+      <p>Бюджет по категориям</p>
+    </header>
+
+    <section class="actions">
+      <button class="btn btn-income" onclick="openEnvelopeForm()">Новая копилка</button>
+    </section>
+
+    <section class="envelopes-list" id="envelopes-list"></section>
+
+    <section class="modal" id="envelope-modal">
+      <div class="modal-content">
+        <h2>Новая копилка</h2>
+        <input type="text" id="envelope-name" placeholder="Название (например: Еда)">
+        <input type="number" id="envelope-budget" placeholder="Бюджет на месяц">
+        <div class="modal-buttons">
+          <button class="btn btn-save" onclick="addEnvelope()">Создать</button>
+          <button class="btn btn-cancel" onclick="closeEnvelopeForm()">Отмена</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ЭКРАН: ПОДПИСКИ -->
+  <div id="screen-subscriptions" class="screen">
+    <header class="header">
+      <h1>Подписки</h1>
+      <p>Контроль платежей</p>
+    </header>
+
+    <section class="actions">
+      <button class="btn btn-income" onclick="openSubscriptionForm()">Добавить подписку</button>
+    </section>
+
+    <section class="subscriptions-list" id="subscriptions-list"></section>
+
+    <section class="modal" id="subscription-modal">
+      <div class="modal-content">
+        <h2>Новая подписка</h2>
+        <input type="text" id="subscription-name" placeholder="Название (Netflix)">
+        <input type="number" id="subscription-amount" placeholder="Сумма в месяц">
+        <input type="date" id="subscription-date" placeholder="Дата списания">
+        <div class="modal-buttons">
+          <button class="btn btn-save" onclick="addSubscription()">Создать</button>
+          <button class="btn btn-cancel" onclick="closeSubscriptionForm()">Отмена</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ЭКРАН: ДОЛГИ -->
+  <div id="screen-debts" class="screen">
+    <header class="header">
+      <h1>Долги</h1>
+      <p>Кто кому должен</p>
+    </header>
+
+    <section class="actions">
+      <button class="btn btn-income" onclick="openDebtForm('to-me')">Мне должны</button>
+      <button class="btn btn-expense" onclick="openDebtForm('from-me')">Я должен</button>
+    </section>
+
+    <section class="debts-list" id="debts-list"></section>
+
+    <section class="modal" id="debt-modal">
+      <div class="modal-content">
+        <h2 id="debt-modal-title">Новый долг</h2>
+        <input type="text" id="debt-name" placeholder="Имя человека">
+        <input type="number" id="debt-amount" placeholder="Сумма">
+        <input type="text" id="debt-note" placeholder="Заметка (за что)">
+        <div class="modal-buttons">
+          <button class="btn btn-save" onclick="addDebt()">Создать</button>
+          <button class="btn btn-cancel" onclick="closeDebtForm()">Отмена</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ЭКРАН: СОБЫТИЯ -->
+  <div id="screen-events" class="screen">
+    <header class="header">
+      <h1>События</h1>
+      <p>Важные даты</p>
+    </header>
+
+    <section class="actions">
+      <button class="btn btn-income" onclick="openEventForm()">Добавить событие</button>
+    </section>
+
+    <section class="events-list" id="events-list"></section>
+
+    <section class="modal" id="event-modal">
+      <div class="modal-content">
+        <h2>Новое событие</h2>
+        <input type="text" id="event-name" placeholder="Название (День рождения)">
+        <select id="event-category">
+          <option value="День рождения">День рождения</option>
+          <option value="Барбер">Барбер</option>
+          <option value="Годовщина">Годовщина</option>
+          <option value="Праздник">Праздник</option>
+          <option value="Другое">Другое</option>
+        </select>
+        <input type="date" id="event-date">
+        <input type="text" id="event-note" placeholder="Заметка (кому, что)">
+        <div class="modal-buttons">
+          <button class="btn btn-save" onclick="addEvent()">Создать</button>
+          <button class="btn btn-cancel" onclick="closeEventForm()">Отмена</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ЭКРАН: ЖЕЛАНИЯ -->
+  <div id="screen-wishlist" class="screen">
+    <header class="header">
+      <h1>Список желаний</h1>
+      <p>Хочу купить</p>
+    </header>
+
+    <section class="actions">
+      <button class="btn btn-income" onclick="openWishForm()">Добавить желание</button>
+    </section>
+
+    <section class="wishlist-list" id="wishlist-list"></section>
+
+    <section class="modal" id="wish-modal">
+      <div class="modal-content">
+        <h2>Новое желание</h2>
+        <input type="text" id="wish-name" placeholder="Что хочешь?">
+        <input type="number" id="wish-price" placeholder="Цена">
+        <div class="modal-buttons">
+          <button class="btn btn-save" onclick="addWish()">Создать</button>
+          <button class="btn btn-cancel" onclick="closeWishForm()">Отмена</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ЭКРАН: ИНВЕСТИЦИИ -->
+  <div id="screen-investments" class="screen">
+    <header class="header">
+      <h1>Инвестиции</h1>
+      <p>Твои вложения</p>
+    </header>
+
+    <section class="actions">
+      <button class="btn btn-income" onclick="openInvestmentForm()">Добавить инвестицию</button>
+    </section>
+
+    <section class="investments-list" id="investments-list"></section>
+
+    <section class="modal" id="investment-modal">
+      <div class="modal-content">
+        <h2>Новая инвестиция</h2>
+        <input type="text" id="investment-name" placeholder="Название (Bitcoin)">
+        <input type="number" id="investment-amount" placeholder="Сколько вложил">
+        <div class="modal-buttons">
+          <button class="btn btn-save" onclick="addInvestment()">Создать</button>
+          <button class="btn btn-cancel" onclick="closeInvestmentForm()">Отмена</button>
+        </div>
+      </div>
+    </section>
+  </div>
 
   <!-- ЭКРАН: НАСТРОЙКИ -->
   <div id="screen-settings" class="screen">
@@ -179,34 +345,23 @@
       <p>Управление данными</p>
     </header>
 
-        <div class="settings-card">
+    <section class="settings-container">
+      <div class="settings-card">
         <h3>Напоминания</h3>
-        <p class="settings-desc">Выбери время для напоминаний</p>
-        
+        <p class="settings-desc">Утром — про цель, днём — про смену, вечером — про операции</p>
         <div class="time-setting">
           <label>Утреннее (цель)</label>
           <input type="time" id="morning-time" value="09:00" onchange="saveNotificationTimes()">
         </div>
-        
         <div class="time-setting">
           <label>Обеденное (смена)</label>
           <input type="time" id="shift-time" value="13:00" onchange="saveNotificationTimes()">
         </div>
-        
         <div class="time-setting">
           <label>Вечернее (операции)</label>
           <input type="time" id="evening-time" value="21:00" onchange="saveNotificationTimes()">
         </div>
-        
         <div class="settings-buttons" style="margin-top:16px;">
-          <button class="btn btn-save" id="notif-btn" onclick="toggleNotifications()">Включить напоминания</button>
-        </div>
-      </div>
-  <section class="settings-container">
-      <div class="settings-card">
-        <h3>Напоминания</h3>
-        <p class="settings-desc">Утром — про цель, днём — про смену, вечером — про операции</p>
-        <div class="settings-buttons">
           <button class="btn btn-save" id="notif-btn" onclick="toggleNotifications()">Включить напоминания</button>
         </div>
       </div>
@@ -229,6 +384,7 @@
     <button class="nav-btn" id="nav-goals" onclick="showScreen('goals')">Цели</button>
     <button class="nav-btn" id="nav-shifts" onclick="showScreen('shifts')">Смены</button>
     <button class="nav-btn" id="nav-stats" onclick="showScreen('stats')">Статы</button>
+    <button class="nav-btn" id="nav-envelopes" onclick="showScreen('envelopes')">Копилки</button>
     <button class="nav-btn" id="nav-settings" onclick="showScreen('settings')">⚙</button>
   </nav>
 
